@@ -1,0 +1,14 @@
+server:
+  port: 8081
+
+management:
+  endpoint:
+    env:
+      enabled: true
+      show-values: always
+
+spring:
+  application:
+    name: clientA
+  config:
+    import: "optional:configserver:http://localhost:8080"

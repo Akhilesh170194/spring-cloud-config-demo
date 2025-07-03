@@ -1,0 +1,70 @@
+spring:
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/config
+  docker:
+    compose:
+      enabled: false
+---
+spring:
+  config:
+    activate:
+      on-profile: vault
+  docker:
+    compose:
+      enabled: true
+      lifecycle-management: start_and_stop
+  cloud:
+    config:
+      server:
+        vault:
+          host: localhost
+          port: 8200
+          scheme: http
+          kv-version: 2
+          backend: spring
+          authentication: token
+          token: root
+---
+spring:
+  config:
+    activate:
+      on-profile: git
+  cloud:
+    config:
+      server:
+        git:
+          uri: file:///C:/Users/akhilesh.singh/workspace/haud/demo/spring-cloud-config/config-repo
+          default-label: master
+---
+spring:
+  config:
+    activate:
+      on-profile: composite
+  docker:
+    compose:
+      enabled: true
+      lifecycle-management: start_and_stop
+
+  cloud:
+    config:
+      server:
+        fail-on-composite-error: false
+        composite:
+          - type: native
+            search-locations: classpath:/config
+          - type: git
+            uri: file:///C:/Users/akhilesh.singh/workspace/haud/demo/spring-cloud-config/config-repo
+            default-label: master
+          - type: vault
+            backend: spring
+            kv-version: 2
+            host: localhost
+            port: 8200
+            scheme: http
+            authentication: TOKEN
+            token: root
